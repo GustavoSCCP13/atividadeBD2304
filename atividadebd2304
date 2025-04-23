@@ -1,0 +1,97 @@
+-- Criar o banco de dados
+CREATE DATABASE bd_videolocadora;
+USE bd_videolocadora;
+
+-- Tabela cliente
+CREATE TABLE cliente (
+    idCliente INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100),
+    cidade VARCHAR(100)
+);
+
+-- Tabela filme
+CREATE TABLE filme (
+    idFilme INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(100),
+    genero VARCHAR(50),
+    anoLancamento INT
+);
+
+-- Tabela locacao
+CREATE TABLE locacao (
+    idLocacao INT AUTO_INCREMENT PRIMARY KEY,
+    idCliente INT,
+    idFilme INT,
+    dataLocacao DATE,
+    valor DECIMAL(5,2),
+    FOREIGN KEY (idCliente) REFERENCES cliente(idCliente),
+    FOREIGN KEY (idFilme) REFERENCES filme(idFilme)
+);
+
+
+-- Inserir clientes
+INSERT INTO cliente (nome, cidade) VALUES 
+('Carlos Silva', 'São Paulo'),
+('Ana Souza', 'Rio de Janeiro'),
+('Marcos Lima', 'Belo Horizonte'),
+('Fernanda Dias', 'São Paulo'),
+('Lucas Pereira', 'Campinas'),
+('Juliana Alves', 'Curitiba'); -- nomes fictícios para os integrantes da dupla
+
+-- Inserir filmes
+INSERT INTO filme (titulo, genero, anoLancamento) VALUES 
+('Matrix', 'Ficção Científica', 1999),
+('Titanic', 'Romance', 1997),
+('Vingadores', 'Ação', 2012),
+('Coringa', 'Drama', 2019),
+('Interestelar', 'Ficção Científica', 2014),
+('Gladiador', 'Ação', 2000),
+('A Chegada', 'Ficção Científica', 2016);
+
+-- Inserir locações
+INSERT INTO locacao (idCliente, idFilme, dataLocacao, valor) VALUES 
+(1, 1, '2023-05-01', 5.00),  -- Carlos Silva -> Matrix
+(1, 3, '2023-05-03', 6.00),  -- Carlos Silva -> Vingadores
+(2, 2, '2023-05-02', 4.50),  -- Ana Souza -> Titanic
+(2, 1, '2023-05-04', 5.00),  -- Ana Souza -> Matrix
+(3, 4, '2023-05-01', 6.50),  -- Marcos Lima -> Coringa
+(4, 1, '2023-05-01', 5.00),  -- Fernanda Dias -> Matrix
+(4, 4, '2023-05-05', 6.50),  -- Fernanda Dias -> Coringa
+(5, 5, '2023-05-02', 7.00),  -- Lucas Pereira -> Interestelar
+(5, 6, '2023-05-03', 6.50),  -- Lucas Pereira -> Gladiador
+(6, 2, '2023-05-03', 4.50),  -- Juliana Alves -> Titanic
+(6, 7, '2023-05-04', 6.00),  -- Juliana Alves -> A Chegada
+(5, 3, '2023-05-04', 6.00);  -- Lucas Pereira -> Vingadores
+
+
+
+SELECT * FROM filme;
+
+SELECT * FROM cliente
+WHERE cidade = 'São Paulo';
+
+
+
+SELECT 
+    locacao.idLocacao,
+    cliente.nome AS nomeCliente,
+    filme.titulo AS tituloFilme,
+    locacao.dataLocacao,
+    locacao.valor
+FROM locacao
+JOIN cliente ON locacao.idCliente = cliente.idCliente
+JOIN filme ON locacao.idFilme = filme.idFilme;
+
+
+
+SELECT 
+    cliente.nome AS nomeCliente,
+    COUNT(locacao.idLocacao) AS totalLocacoes
+FROM cliente
+LEFT JOIN locacao ON cliente.idCliente = locacao.idCliente
+GROUP BY cliente.nome;
+
+
+
+SELECT * FROM filme
+ORDER BY anoLancamento DESC;
